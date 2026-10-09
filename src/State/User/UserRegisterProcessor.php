@@ -11,9 +11,9 @@ use App\Service\UserService;
 /**
  * @implements ProcessorInterface<UserRegisterInput, UserDetailsOutput>
  */
-final class UserRegisterProcessor implements ProcessorInterface
+final readonly class UserRegisterProcessor implements ProcessorInterface
 {
-    public function __construct(private readonly UserService $userService) {}
+    public function __construct(private UserService $userService) {}
 
     /**
      * Inscrit le compte envoyé et renvoie sa représentation détaillée.
@@ -25,6 +25,7 @@ final class UserRegisterProcessor implements ProcessorInterface
         array $context = [],
     ): UserDetailsOutput {
         // 1. Inscrire le user
+
         // 2. transformer le user qu'on vient de créer en UserDetailsOutput
         // 3. Retourner le UserDetailsOutput
         //

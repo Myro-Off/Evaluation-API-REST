@@ -12,10 +12,10 @@ use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 use Symfony\Component\DependencyInjection\Attribute\AutowireDecorated;
 
 #[AsDecorator('api_platform.openapi.factory', priority: -1)]
-final class OpenApiFactory implements OpenApiFactoryInterface
+final readonly class OpenApiFactory implements OpenApiFactoryInterface
 {
     public function __construct(
-        #[AutowireDecorated] private readonly OpenApiFactoryInterface $decorated,
+        #[AutowireDecorated] private OpenApiFactoryInterface $decorated,
     ) {
     }
 
@@ -30,20 +30,6 @@ final class OpenApiFactory implements OpenApiFactoryInterface
         $paths->addPath('/api/auth/login', new PathItem(post: new Operation(
             operationId: 'login',
             tags: ['Authentification'],
-            summary: 'Se connecter',
-            requestBody: new RequestBody(
-                required: true,
-                content: new ArrayObject([
-                    'application/json' => ['schema' => [
-                        'type' => 'object',
-                        'required' => ['email', 'password'],
-                        'properties' => [
-                            'email' => ['type' => 'string', 'format' => 'email'],
-                            'password' => ['type' => 'string', 'format' => 'password'],
-                        ],
-                    ]],
-                ]),
-            ),
             responses: [
                 '200' => [
                     'description' => 'Jetons délivrés.',
@@ -60,25 +46,26 @@ final class OpenApiFactory implements OpenApiFactoryInterface
                 ],
                 '401' => ['description' => 'Identifiants invalides.'],
             ],
+            summary: 'Se connecter',
+            requestBody: new RequestBody(
+                content: new ArrayObject([
+                    'application/json' => ['schema' => [
+                        'type' => 'object',
+                        'required' => ['email', 'password'],
+                        'properties' => [
+                            'email' => ['type' => 'string', 'format' => 'email'],
+                            'password' => ['type' => 'string', 'format' => 'password'],
+                        ],
+                    ]],
+                ]),
+                required: true,
+            ),
             security: [],
         )));
 
         $paths->addPath('/api/auth/refresh', new PathItem(post: new Operation(
             operationId: 'refresh',
             tags: ['Authentification'],
-            summary: 'Renouveler le jeton d\'accès',
-            requestBody: new RequestBody(
-                required: true,
-                content: new ArrayObject([
-                    'application/json' => ['schema' => [
-                        'type' => 'object',
-                        'required' => ['refreshToken'],
-                        'properties' => [
-                            'refreshToken' => ['type' => 'string'],
-                        ],
-                    ]],
-                ]),
-            ),
             responses: [
                 '200' => [
                     'description' => 'Jeton d\'accès renouvelé.',
@@ -95,6 +82,19 @@ final class OpenApiFactory implements OpenApiFactoryInterface
                 ],
                 '401' => ['description' => 'Jeton de renouvellement invalide ou expiré.'],
             ],
+            summary: 'Renouveler le jeton d\'accès',
+            requestBody: new RequestBody(
+                content: new ArrayObject([
+                    'application/json' => ['schema' => [
+                        'type' => 'object',
+                        'required' => ['refreshToken'],
+                        'properties' => [
+                            'refreshToken' => ['type' => 'string'],
+                        ],
+                    ]],
+                ]),
+                required: true,
+            ),
             security: [],
         )));
 

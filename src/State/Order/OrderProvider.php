@@ -10,10 +10,10 @@ use App\Service\OrderService;
 /**
  * @implements ProviderInterface<Order>
  */
-final class OrderProvider implements ProviderInterface
+final readonly class OrderProvider implements ProviderInterface
 {
     public function __construct(
-        private readonly OrderService $orderService,
+        private OrderService $orderService,
     ) {
     }
 

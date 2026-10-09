@@ -30,46 +30,46 @@ use Symfony\Component\Uid\Uuid;
     new Post(
         uriTemplate: '/orders',
         // le contrat n'envoie aucun corps sur cette adresse : il n'y a rien à désérialiser
+        security: "is_granted('ROLE_USER')",
         input: false,
         output: OrderDetailsOutput::class,
         processor: OrderOpenProcessor::class,
-        security: "is_granted('ROLE_USER')",
     ),
     new GetCollection(
         uriTemplate: '/orders',
         paginationClientEnabled: false,
+        security: "is_granted('ROLE_USER')",
         output: OrderDetailsOutput::class,
         provider: OrderCollectionProvider::class,
-        security: "is_granted('ROLE_USER')",
     ),
     new Post(
         uriTemplate: '/orders/{id}/lines',
         // un identifiant mal formé ne trouve aucune route : 404 dès le routeur, avant toute conversion
         requirements: ['id' => Requirement::UUID],
+        security: "object.getCreatedBy() == user",
         input: OrderAddLineInput::class,
         output: OrderDetailsOutput::class,
         processor: OrderAddLineProcessor::class,
-        security: "object.getCreatedBy() == user",
     ),
     new Delete(
         uriTemplate: '/orders/{id}/lines/{lineId}',
         requirements: ['id' => Requirement::UUID, 'lineId' => Requirement::UUID],
         // ni input: ni output: — le contrat n'envoie aucun corps sur cette adresse et n'en
         // attend aucun ; le 204 vient du null que rend le processor
+        security: "object.getCreatedBy() == user",
         provider: OrderProvider::class,
         processor: OrderRemoveLineProcessor::class,
-        security: "is_granted('ROLE_USER') or object.getCreatedBy() == user",
     ),
     new Post(
         uriTemplate: '/orders/{id}/pay',
         requirements: ['id' => Requirement::UUID],
+        status: 200,
+        security: "object.getCreatedBy() == user",
         input: OrderPayInput::class,
         output: OrderPayOutput::class,
         provider: OrderProvider::class,
-        processor: OrderPayProcessor::class,
-        security: "object.getCreatedBy() == user",
         // le contrat déclare 200 : on ne crée pas de ressource adressable, on règle une commande
-        status: 200,
+        processor: OrderPayProcessor::class,
     ),
 ])]
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
@@ -88,8 +88,8 @@ class Order extends AbstractEntity
      * @var Collection<int, OrderLine>
      */
     #[ORM\OneToMany(
-        mappedBy: 'order',
         targetEntity: OrderLine::class,
+        mappedBy: 'order',
         cascade: ['persist'],
         orphanRemoval: false,
     )]

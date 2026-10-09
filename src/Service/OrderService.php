@@ -19,15 +19,16 @@ use App\Exception\Order\OrderNotFoundException;
 use App\Exception\Order\OrderRestaurantMismatchException;
 use App\Repository\OrderRepository;
 use App\Service\Utils\AuditService;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Uid\Uuid;
 
-class OrderService
+readonly class OrderService
 {
     public function __construct(
-        private readonly OrderRepository $orderRepository,
-        private readonly DishService $dishService,
-        private readonly KitchenTicketService $kitchenTicketService,
-        private readonly AuditService $audit,
+        private OrderRepository      $orderRepository,
+        private DishService          $dishService,
+        private KitchenTicketService $kitchenTicketService,
+        private AuditService         $audit,
     ) {
     }
 
@@ -41,7 +42,7 @@ class OrderService
             dish: $this->dishService->toList($dish),
             quantity: $line->getQuantity(),
             // le sous-total ne vient d'aucune colonne : il se recalcule à chaque lecture
-            subtotal: $dish->getPrice(),
+            subtotal: $dish->getPrice() * $line->getQuantity(),
         );
     }
 
@@ -114,8 +115,13 @@ class OrderService
      */
     public function addLine(Order $order, OrderAddLineInput $input): Order
     {
+        if (OrderStatus::Paid === $order->getStatus()) {
+            throw new OrderAlreadyPaidException();
+        }
+
         // résoudre un plat appartient au domaine des plats : ce service passe par le sien
         $dish = $this->dishService->findOneById(Uuid::fromString($input->dishId));
+
 
         // une commande se retire dans un seul restaurant : le plat doit venir de celui des lignes
         // vivantes
@@ -209,6 +215,9 @@ class OrderService
 
         // ni une création ni une suppression : une mise à jour, estampillée comme telle
         $this->audit->stampUpdate($order);
+
+        `$this->orderRepository->persist($order);
+        $this->orderRepository->flush();`
 
         return $kitchenTickets;
     }

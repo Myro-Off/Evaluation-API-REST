@@ -13,11 +13,11 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 /**
  * @implements ProcessorInterface<mixed, OrderDetailsOutput>
  */
-final class OrderOpenProcessor implements ProcessorInterface
+final readonly class OrderOpenProcessor implements ProcessorInterface
 {
     public function __construct(
-        private readonly Security $security,
-        private readonly OrderService $orderService,
+        private Security     $security,
+        private OrderService $orderService,
     ) {
     }
 

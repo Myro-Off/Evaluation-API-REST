@@ -12,11 +12,11 @@ use Symfony\Bundle\SecurityBundle\Security;
 /**
  * @implements ProviderInterface<UserDetailsOutput>
  */
-final class UserMeProvider implements ProviderInterface
+final readonly class UserMeProvider implements ProviderInterface
 {
     public function __construct(
-        private readonly Security $security,
-        private readonly UserService $userService,
+        private Security    $security,
+        private UserService $userService,
     ) {}
 
     /**

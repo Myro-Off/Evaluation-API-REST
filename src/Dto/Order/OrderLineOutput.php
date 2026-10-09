@@ -6,7 +6,7 @@ use ApiPlatform\Metadata\ApiProperty;
 use App\Dto\Dish\DishListOutput;
 use Symfony\Component\Uid\Uuid;
 
-final class OrderLineOutput
+final readonly class OrderLineOutput
 {
     public function __construct(
         #[ApiProperty(schema: [
@@ -14,22 +14,22 @@ final class OrderLineOutput
             'format' => 'uuid',
             'description' => 'Identifiant de la ligne.',
         ])]
-        public readonly Uuid $id,
+        public Uuid           $id,
 
         #[ApiProperty(description: 'Plat commandé.')]
-        public readonly DishListOutput $dish,
+        public DishListOutput $dish,
 
         #[ApiProperty(schema: [
             'type' => 'integer',
             'description' => 'Nombre de portions commandées.',
         ])]
-        public readonly int $quantity,
+        public int            $quantity,
 
         #[ApiProperty(schema: [
             'type' => 'integer',
             'description' => 'Prix du plat multiplié par la quantité, en centimes.',
         ])]
-        public readonly int $subtotal,
+        public int            $subtotal,
     ) {
     }
 }

@@ -21,17 +21,17 @@ use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
     operations: [
         new Post(
             uriTemplate: '/auth/register',
+            openapi: new OpenApiOperation(security: []),
             input: UserRegisterInput::class,
             output: UserDetailsOutput::class,
             processor: UserRegisterProcessor::class,
-            openapi: new OpenApiOperation(security: []),
         ),
         new Get(
             uriTemplate: '/users/me',
             uriVariables: [],
+            security: "is_granted('ROLE_USER')",
             output: UserDetailsOutput::class,
             provider: UserMeProvider::class,
-            security: "is_granted('ROLE_USER')",
         ),
     ]
 )]

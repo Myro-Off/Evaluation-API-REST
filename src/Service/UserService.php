@@ -11,13 +11,13 @@ use App\Service\Utils\AuditService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserService
+readonly class UserService
 {
     public function __construct(
-        private readonly UserRepository $userRepository,
-        private readonly UserPasswordHasherInterface $passwordHasher,
-        private readonly AuditService $audit,
-        private readonly LoggerInterface $domainLogger,
+        private UserRepository              $userRepository,
+        private UserPasswordHasherInterface $passwordHasher,
+        private AuditService                $audit,
+        private LoggerInterface             $domainLogger,
     )
     {
 

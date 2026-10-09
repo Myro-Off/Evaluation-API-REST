@@ -6,10 +6,10 @@ use App\Entity\Impl\AbstractEntity;
 use DateTimeImmutable;
 use Symfony\Bundle\SecurityBundle\Security;
 
-class AuditService
+readonly class AuditService
 {
     public function __construct(
-        private readonly Security $security,
+        private Security $security,
     ) {
     }
 

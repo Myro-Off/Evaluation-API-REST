@@ -11,10 +11,10 @@ use App\Service\OrderService;
 /**
  * @implements ProcessorInterface<OrderAddLineInput, OrderDetailsOutput>
  */
-final class OrderAddLineProcessor implements ProcessorInterface
+final readonly class OrderAddLineProcessor implements ProcessorInterface
 {
     public function __construct(
-        private readonly OrderService $orderService,
+        private OrderService $orderService,
     ) {
     }
 

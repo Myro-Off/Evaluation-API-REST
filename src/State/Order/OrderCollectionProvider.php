@@ -12,11 +12,11 @@ use Symfony\Bundle\SecurityBundle\Security;
 /**
  * @implements ProviderInterface<OrderDetailsOutput>
  */
-final class OrderCollectionProvider implements ProviderInterface
+final readonly class OrderCollectionProvider implements ProviderInterface
 {
     public function __construct(
-        private readonly Security $security,
-        private readonly OrderService $orderService,
+        private Security     $security,
+        private OrderService $orderService,
     ) {
     }
 

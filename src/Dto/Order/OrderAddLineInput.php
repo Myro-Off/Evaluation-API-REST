@@ -10,20 +10,20 @@ final class OrderAddLineInput
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Uuid]
-        #[ApiProperty(schema: [
+        #[ApiProperty(required: true, schema: [
             'type' => 'string',
             'format' => 'uuid',
             'description' => 'Identifiant du plat à ajouter.',
-        ], required: true)]
+        ])]
         public string $dishId,
 
         #[Assert\NotBlank]
-        #[Assert\PositiveOrZero]
-        #[ApiProperty(schema: [
+        #[Assert\Positive]
+        #[ApiProperty(required: true, schema: [
             'type' => 'integer',
             'description' => 'Nombre de portions du plat.',
-            'minimum' => 0,
-        ], required: true)]
+            'minimum' => 1,
+        ])]
         public int $quantity,
     ) {
     }
